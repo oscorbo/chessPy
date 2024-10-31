@@ -9,6 +9,7 @@ class element:
 		self.elementKind = eKin
 		self.period = coords[0]
 		self.group = coords[1]
+		# small vers
 		
 		# electro config :vv
 		

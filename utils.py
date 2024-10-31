@@ -1,6 +1,8 @@
 
 from enum import Enum
 
+prefix = ['mono', 'bi', 'tri', 'tetra', 'penta', 'hexa']
+
 # class syntax
 class elementKind(Enum):
     NoMetal = 1

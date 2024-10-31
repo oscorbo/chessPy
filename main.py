@@ -3,8 +3,8 @@ from table import periodicTable, atom, molecule
 
 pT = periodicTable()
 
-hidro = atom(pT.getSimb('H'), -1)
-oxige = atom(pT.getSimb('O'), -2)
+hidro = atom(pT.getSimb('H'), 0)
+oxige = atom(pT.getSimb('O'), 0)
 
-hidroMol = molecule([hidro, oxige])
+hidroMol = molecule([hidro])
 hidroMol.printSystematic()

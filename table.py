@@ -1,6 +1,6 @@
 
 from element import element as ele
-from utils import elementKind as eKind
+from utils import elementKind as eKind, prefix
 
 class periodicTable:
 	def __init__(self):
@@ -53,19 +53,19 @@ class atom:
 		self.setCharge(valency)
 		
 	def setCharge(self, valencyToSet):
-		for valency in self.element.valencies:
-			if valencyToSet == valency:
-				self.charge = valency
-				return
-		print('Error: No found Valency!!')
+		try: 
+			self.charge = self.element.valencies[valencyToSet]
+		except:
+			print('Error: No found Valency!!')
+			self.charge = 0
 		
 class molecule:
 	def __init__(self, atoms):
 		self.atoms = atoms
 		
-	def hasOxigen(self):
+	def containsElement(self, simb):
 		for atom in self.atoms:
-			if atom.element.simb == 'O':
+			if atom.element.simb == simb:
 				return True
 		return False
 		
@@ -89,8 +89,7 @@ class molecule:
 					print('Ion '+ onlyAtom.element.name + 'uro')
 			case 2:
 				print('Binario')
-				if self.hasOxigen:
+				if self.contaisElement('O'):
 					print('Oxido de ' + self.getNot('O').element.name)
-					pass 
 			case _:
 				print('wtf')
