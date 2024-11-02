@@ -1,6 +1,5 @@
-
 from element import element as ele
-from utils import elementKind as eKind, prefix
+from utils import elementKind as eKind, prefix, contains, getIndexOf
 
 class periodicTable:
 	def __init__(self):
@@ -47,23 +46,56 @@ class periodicTable:
 		return None
 	
 class atom:
-	def __init__(self, element, valency):
-		self.element = element
-		self.charge = 0
-		self.setCharge(valency)
+    def __init__(self, element, valency):
+        self.element = element
+        self.charge = 0
+		# should change to valency or n° oxi
+        self.setCharge(valency)
 		
-	def setCharge(self, valencyToSet):
-		try: 
-			self.charge = self.element.valencies[valencyToSet]
-		except:
-			print('Error: No found Valency!!')
-			self.charge = 0
+    def setCharge(self, valencyToSet):
+        try: 
+            self.charge = self.element.valencies[valencyToSet]
+        except:
+            print('Error: No found Valency!!')
+            self.charge = 0
+			
+    def getKind(self):
+        return self.element.elementKind
+	
+    def isGroup17(self): return self.element.group == 17
 		
 class molecule:
-	def __init__(self, atoms):
-		self.atoms = atoms
+
+	def __init__(self, atomsToAssign):
+		self.atoms_no_sorted = []
+		self.amount_atoms_no_sorted = []
 		
+		for atom in atomsToAssign:
+			if not contains(self.atoms_no_sorted, atom):
+				self.atoms_no_sorted.append(atom)
+				self.amount_atoms_no_sorted.append(1)
+			else:
+				self.amount_atoms_no_sorted[getIndexOf(self.atoms_no_sorted, atom)] += 1
+
+		self.atoms = []
+		self.amount_atoms = []
+
+		for i in range(0, len(self.atoms_no_sorted)):
+			for j in range(0, len(self.atoms_no_sorted)):
+				index = 0
+				electronegativite = 0
+				atom = self.atoms_no_sorted[j]
+				if atom.element.electronegativity > electronegativite:
+					index = j
+					electronegativite = atom.element.electronegativity
+			self.atoms.append(self.atoms_no_sorted[index])
+			self.amount_atoms.append(self.amount_atoms_no_sorted[index])
+
+			self.atoms_no_sorted.remove(atom)
+
+
 	def containsElement(self, simb):
+		# repetidos y atomos
 		for atom in self.atoms:
 			if atom.element.simb == simb:
 				return True
@@ -81,6 +113,7 @@ class molecule:
 				print('Monoatomico')
 				onlyAtom = self.atoms[0]
 				if onlyAtom.charge > 0:
+					# prefijo
 					# positive
 					print('Ion '+ onlyAtom.element.name + str(onlyAtom.charge))
 					
@@ -89,7 +122,16 @@ class molecule:
 					print('Ion '+ onlyAtom.element.name + 'uro')
 			case 2:
 				print('Binario')
-				if self.contaisElement('O'):
-					print('Oxido de ' + self.getNot('O').element.name)
+				# Fe2, O3
+				# Fe Fe, O O O
+				if self.containsElement('O'):
+					# electronegativo 
+					# give elemente get amount
+					# for each made that shi??
+					for i in range(0, len(self.atoms)):
+						atom = self.atoms[i]
+						amount_atom = self.amount_atoms[i]
+						print(prefix[amount_atom] + atom.element.name)
 			case _:
 				print('wtf')
+				print(len(self.atoms))
