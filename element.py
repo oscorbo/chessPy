@@ -1,6 +1,7 @@
 
 from math import sqrt
 
+# ELEMENT CLASS
 class element:
 	def __init__(self, simb, name, nAtomic, weigAtomic, valency, eKin, coords, root):
 		self.simb = simb
@@ -18,3 +19,24 @@ class element:
 			self.electronegativity = sqrt(distance)
 		else:
 			self.electronegativity = sqrt(-1 * distance)
+
+# ATOM
+
+class atom:
+    def __init__(self, element, valency):
+        self.element = element
+        self.charge = 0
+		# should change to valency or n° oxi
+        self.setCharge(valency)
+		
+    def setCharge(self, valencyToSet):
+        try: 
+            self.charge = self.element.valencies[valencyToSet]
+        except:
+            print('Error: No found Valency!!')
+            self.charge = 0
+			
+    def getKind(self):
+        return self.element.elementKind
+	
+    def isGroup17(self): return self.element.group == 17

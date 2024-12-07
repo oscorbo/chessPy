@@ -1,7 +1,10 @@
 
 from enum import Enum
 
+# sistematica
 prefix = ['x', 'mono', 'di', 'tri', 'tetra', 'penta', 'hexa']
+
+# tradicional
 prefixTradicional1i = [""]
 prefixTradicional1f = ["ico"]
 
@@ -14,6 +17,28 @@ prefixTradicional3f = ["oso", "oso", "ico"]
 prefixTradicional4i = ["hipo", "", "", "per"]
 prefixTradicional4f = ["oso", "oso", "ico", "ico"]
 
+Volatile_HydridesElements = ["N", "P", "As", "Sb", "C", "Si", "B"]
+HydracidsElements = ["F", "Cl", "Br", "I", "S", "Se", "Te"]
+
+# diccionary
+# element to root
+rootsElements = {
+  'O' : "Oxido",
+  '(O2)' : "Peroxido",
+  'H' : "Hidrudo",
+} 
+
+# class binaryCompound
+class binaryCompound(Enum):
+    Metal_Oxides = 1
+    Anhydrides = 2
+    Peroxides = 3
+    Metal_Hydrides = 4
+    Volatile_Hydrides = 5
+    Hydracids = 6
+    Neutral_Salts = 7
+    Volatile_Salts = 8
+
 # class syntax
 class elementKind(Enum):
     NoMetal = 1
@@ -21,6 +46,12 @@ class elementKind(Enum):
     SemiMetal = 3
     GasNoble = 4
     
+def isInArray(target, array):
+    for item in array:
+        if target == item:
+            return True
+    return False
+
 def contains(list, target):
     for item in list:
         if item.element.simb == target.element.simb and item.charge == target.charge:
