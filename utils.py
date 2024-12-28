@@ -20,12 +20,16 @@ prefixTradicional4f = ["oso", "oso", "ico", "ico"]
 Volatile_HydridesElements = ["N", "P", "As", "Sb", "C", "Si", "B"]
 HydracidsElements = ["F", "Cl", "Br", "I", "S", "Se", "Te"]
 
+
 # diccionary
 # element to root
 rootsElements = {
   'O' : "Oxido",
   '(O2)' : "Peroxido",
   'H' : "Hidrudo",
+
+  'Cl' : "Cloruro",
+  'Br' : "Bromuro"
 } 
 
 # class binaryCompound
@@ -38,6 +42,18 @@ class binaryCompound(Enum):
     Hydracids = 6
     Neutral_Salts = 7
     Volatile_Salts = 8
+
+compoundKindToPrefix = {
+    "Metal_Oxides" : "Oxido",
+    "Anhydrides" : "Anhidrido",
+    "Peroxides" : "Peroxido",
+    "Volatile_Hydrides" : "Hidruro",
+    "Metal_Hydrides" : "Hidruro",
+    "Hydracids" : "??",
+    "Neutral_Salts" : "??",
+    "Volatile_Hydrides" : "??",
+}
+
 
 # class syntax
 class elementKind(Enum):
@@ -68,7 +84,6 @@ def valenciesToTraditional(element, charge):
     # (1, 3, -2)
     if charge < 0:
         print("tf is less than 0")
-        return 1
     # 1, 3
     without_negatives = []
     # x +- 1 ?
@@ -82,7 +97,6 @@ def valenciesToTraditional(element, charge):
         if without_negatives[i] == charge:
             index = i
             break
-        print("WTF???????? Ion or somshi lk that :v")
 
     match len(without_negatives):
         case 1:
