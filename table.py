@@ -68,7 +68,7 @@ class periodicTable:
 		eles.append(
 			ele(simb = 'S', name = 'Azufre', 
 			nAtomic = 16, weigAtomic = 32.066, 
-			valency = [2, 4, 6, -2], eKin = eKind.NoMetal, coords = [3, 16], root = "sulfur",  electronegatividad = 2.5))
+			valency = [2, 4, 6, -2], eKin = eKind.NoMetal, coords = [3, 16], root = "sulf",  electronegatividad = 2.5))
 		eles.append(
 			ele(simb = 'Cl', name = 'Cloro', 
 	   		nAtomic = 17, weigAtomic = 35.453, 
@@ -182,9 +182,10 @@ class molecule:
 		for i in range(len(self.atoms_no_sorted)):
 			for j in range(0, len(self.atoms_no_sorted) - i - 1):
 				if self.atoms_no_sorted[j].element.electronegativity > self.atoms_no_sorted[j + 1].element.electronegativity:
-					#?????
-				#or self.atoms_no_sorted[j].charge < 0:
+					# .element.electronegativity
+					# .charge
 					self.atoms_no_sorted[j], self.atoms_no_sorted[j + 1] = self.atoms_no_sorted[j + 1], self.atoms_no_sorted[j]
+					self.amount_atoms_no_sorted[j], self.amount_atoms_no_sorted[j + 1] = self.amount_atoms_no_sorted[j + 1], self.amount_atoms_no_sorted[j]
 
 		self.atoms = self.atoms_no_sorted
 		self.amount_atoms = self.amount_atoms_no_sorted
@@ -211,6 +212,12 @@ class molecule:
 				return atom
 		return None
 	
+	def getElementIndex(self, simbGet):
+		for i in range(len(self.atoms)):
+			if self.atoms[i].element.simb == simbGet:
+				return i
+		return None
+	
 	# this should return an array igs
 	def getNotElement(self, simbNoGet):
 		for atom in self.atoms:
@@ -225,9 +232,10 @@ class molecule:
 		if self.containsElement('O') and self.getNotElement('O').getKind() is eKind.Metal: return binaryCompound.Metal_Oxides
 		if self.containsElement('O') and self.getNotElement('O').getKind() is eKind.NoMetal: return binaryCompound.Anhydrides
 		if self.containsElement('(O2)'): return binaryCompound.Peroxides
-		if self.containsElement('H') and self.getNotElement('H').getKind() is eKind.Metal: return binaryCompound.Metal_Hydrides
 		if self.containsElement('H') and self.getNotElement('H').getKind() is eKind.NoMetal and isInArray(self.getNotElement('H').element.simb, Volatile_HydridesElements): return binaryCompound.Volatile_Hydrides
 		if self.containsElement('H') and self.getNotElement('H').getKind() is eKind.NoMetal and isInArray(self.getNotElement('H').element.simb, HydracidsElements): return binaryCompound.Hydracids
+		if self.containsElement('H') and self.getNotElement('H').getKind() is eKind.Metal: return binaryCompound.Metal_Hydrides
+
 		elementsM = self.getAtomsByEKinds([eKind.NoMetal])
 		if len(elementsM) == len(self.atoms): return binaryCompound.Volatile_Salts
 		elementsNoM_M = self.getAtomsByEKinds([eKind.NoMetal, eKind.Metal])
@@ -251,6 +259,9 @@ class molecule:
 				tempString += prefix[amount_atom] + atom.element.name + " "
 		print(tempString)
 
+	def getTradicionalFromAtom(self, atom):
+		return f"{valenciesToTraditional(atom.element, atom.charge)[0]}{atom.element.root}{valenciesToTraditional(atom.element, atom.charge)[1]}"
+
 	def printStock(self, element1, element2):
 		print(" | stock")
 		print(f"{rootsElements[element1.element.simb]} de {element2.element.name} ({str(element2.charge)})") 
@@ -258,14 +269,14 @@ class molecule:
 	def printTradicional(self, compoundKind, nonMain):
 		print(" | tradicional")
 		tempCOmpoundKind = str(compoundKind).split(".")[1]
-		print(f"{compoundKindToPrefix[str(tempCOmpoundKind)]} {valenciesToTraditional(nonMain.element, nonMain.charge)[0]}{nonMain.element.root}{valenciesToTraditional(nonMain.element, nonMain.charge)[1]}")
+		print(f"{compoundKindToPrefix[str(tempCOmpoundKind)]} {self.getTradicionalFromAtom(nonMain)}")
 
 	def printFormula(self):
 		print(" | formula")
-		atoms_Reverted = self.atoms[::-1]
-		#atoms_Reverted = self.atoms
-		amount_atoms_Reverted = self.amount_atoms[::-1]
-		#amount_atoms_Reverted = self.amount_atoms
+		#atoms_Reverted = self.atoms[::-1]
+		atoms_Reverted = self.atoms
+		#amount_atoms_Reverted = self.amount_atoms[::-1]
+		amount_atoms_Reverted = self.amount_atoms
 		empty_String = ""
 		for i in range(0, len(atoms_Reverted)):
 			atom = atoms_Reverted[i]
@@ -354,26 +365,31 @@ class molecule:
 				elif compoundBinaryKind == binaryCompound.Hydracids:
 					hydro = self.getElement("H")
 					noHydro = self.getNotElement("H")
+					amountHydros = self.amount_atoms[self.getElementIndex("H")]
+					if amountHydros == 1:
+						amountHydros = ""
+					else:
+						amountHydros = str(amountHydros)
+					
 
 					# sistematica
 					print(" | sistematica")
 					print(noHydro.element.root + "uro de " + hydro.element.name)
 					print(" | tradicional")
 					print(f"Acido {noHydro.element.root}{hydro.element.root}ico")
-					self.printFormula()
+					print(" | Formula")
+					print(f"{hydro.element.simb}{amountHydros}{noHydro.element.simb}")
 
 				elif compoundBinaryKind == binaryCompound.Neutral_Salts:
-					elementsNoM_M = self.getAtomsByEKinds([eKind.NoMetal, eKind.Metal])
+					elementsNoM_M = self.getAtomsByEKinds([eKind.Metal, eKind.NoMetal])
 					atom1 = elementsNoM_M[0]
 					atom2 = elementsNoM_M[1]
 
-					# tradicional | na
-					# print(f"Anhidrico {noOxygen.element.root}{valenciesToTraditional(noOxygen.element, noOxygen.charge)[1]}")
-
-					# formulacion
+					print(" | tradicional")
+					print(f"{atom1.element.root}uro de ")
 					# sistematica
-					print(" | sistematica")
-					print(atom1.element.root + "uro de " + atom2.element.name)
+					print(" | stock")
+					print(atom1.element.root + "uro de " + self.getTradicionalFromAtom(atom2))
 					self.printFormula()
 
 				elif compoundBinaryKind == binaryCompound.Volatile_Salts:

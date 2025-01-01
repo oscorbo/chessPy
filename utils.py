@@ -28,6 +28,7 @@ rootsElements = {
   '(O2)' : "Peroxido",
   'H' : "Hidrudo",
 
+    # ????
   'Cl' : "Cloruro",
   'Br' : "Bromuro"
 } 
