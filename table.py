@@ -251,14 +251,17 @@ class molecule:
 			# oxigeno -> oxido
 			atom = self.atoms[i]
 			amount_atom = self.amount_atoms[i]
+			# primero??
 			if not i == len(self.atoms) - 1:
-				# ??
 				try:
-					tempString += prefix[amount_atom] + rootsElements[atom.element.simb] + " "
+					tempString += prefix[amount_atom] + rootsElements[atom.element.simb] + " de "
 				except:
-					tempString += prefix[amount_atom] + atom.element.name + " "
+					tempString += prefix[amount_atom] + atom.element.name + " de "
 			else:
-				tempString += prefix[amount_atom] + atom.element.name + " "
+				if not amount_atom == 1:
+					tempString += prefix[amount_atom] + atom.element.name
+				else:
+					tempString += atom.element.name
 		print(tempString)
 		
 	def printSistematicInverted(self):
@@ -274,20 +277,25 @@ class molecule:
 			if not i == len(atoms) - 1:
 				# ??
 				try:
-					tempString += prefix[amount_atom] + rootsElements[atom.element.simb] + " "
+					tempString += prefix[amount_atom] + rootsElements[atom.element.simb] + " de "
 				except:
-					tempString += prefix[amount_atom] + atom.element.root + "uro "
+					tempString += prefix[amount_atom] + atom.element.root + "uro de "
 			else:
-				tempString += prefix[amount_atom] + atom.element.name + " "
+				if not amount_atom == 1:
+					tempString += prefix[amount_atom] + atom.element.name
+				else:
+					tempString += atom.element.name
 		print(tempString)
-
 
 	def getTradicionalFromAtom(self, atom):
 		return f"{valenciesToTraditional(atom.element, atom.charge)[0]}{atom.element.root}{valenciesToTraditional(atom.element, atom.charge)[1]}"
 
 	def printStock(self, element1, element2):
 		print(" | stock")
-		print(f"{rootsElements[element1.element.simb]} de {element2.element.name} ({str(element2.charge)})") 
+		if len(element2.element.getPositiveValencies()) != 1:
+			print(f"{rootsElements[element1.element.simb]} de {element2.element.name} ({str(element2.charge)})") 
+		else:
+			print(f"{rootsElements[element1.element.simb]} de {element2.element.name} ") 
 
 	def printTradicional(self, compoundKind, nonMain):
 		print(" | tradicional")
@@ -394,6 +402,7 @@ class molecule:
 					else:
 						amountHydros = str(amountHydros)
 					
+					print("Compuestos: Hidracidos no tienen nomenclatura tradicional")
 
 					# sistematica
 					print(" | sistematica")
@@ -409,7 +418,10 @@ class molecule:
 					atom2 = elementsNoM_M[0]
 					
 					print(" | stock")
-					print(f"{atom1.element.root}uro de {atom2.element.name} ({atom2.charge})")
+					if len(atom2.element.getPositiveValencies()) != 1:
+						print(f"{atom1.element.root}uro de {atom2.element.name} ({atom2.charge})")
+					else:
+						print(f"{atom1.element.root}uro de {atom2.element.name} ")
 					self.printSistematicInverted()
 					print(" | tradicional")
 					print(f"{atom1.element.root}uro {self.getTradicionalFromAtom(atom2)}")
@@ -426,7 +438,10 @@ class molecule:
 					print(" | tradicional")
 					print(f"{atom1.element.root}uro {self.getTradicionalFromAtom(atom2)}")
 					print(" | stock")
-					print(f"{atom1.element.root}uro de {atom2.element.name} ({atom2.charge})")
+					if len(atom2.element.getPositiveValencies()) != 1:
+						print(f"{atom1.element.root}uro de {atom2.element.name} ({atom2.charge})")
+					else:
+						print(f"{atom1.element.root}uro de {atom2.element.name} ")
 					self.printSistematicInverted()
 					self.printFormula()
 

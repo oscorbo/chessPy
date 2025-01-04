@@ -34,8 +34,10 @@ hier = atom(pT.getSimb('Fe'), 0)
 tita = atom(pT.getSimb('Ti'), 0)
 # 3
 niqu = atom(pT.getSimb('Ni'), 1)
+# 3 
+boro = atom(pT.getSimb('B'), 0)
 
-hidroMol = molecule([fluo, fluo, fluo, niqu])
+hidroMol = molecule([nitro, boro])
 # solamente la sistematica, por ahora
 hidroMol.printThatShitASAP()
 
