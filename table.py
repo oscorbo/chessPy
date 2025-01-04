@@ -24,7 +24,7 @@ class periodicTable:
 		eles.append(
 			ele(simb = 'B', name = 'Boro', 
 			nAtomic = 5, weigAtomic = 10.811, 
-			valency = [3, -3], eKin = eKind.SemiMetal, coords = [2, 13], root = "brom", electronegatividad = 2.0))
+			valency = [3, -3], eKin = eKind.NoMetal, coords = [2, 13], root = "bor", electronegatividad = 2.0))
 		eles.append(
 			ele(simb = 'C', name = 'Carbono', 
 			nAtomic = 6, weigAtomic = 12.011, 
@@ -236,8 +236,9 @@ class molecule:
 		if self.containsElement('H') and self.getNotElement('H').getKind() is eKind.NoMetal and isInArray(self.getNotElement('H').element.simb, HydracidsElements): return binaryCompound.Hydracids
 		if self.containsElement('H') and self.getNotElement('H').getKind() is eKind.Metal: return binaryCompound.Metal_Hydrides
 
-		elementsM = self.getAtomsByEKinds([eKind.NoMetal])
+		elementsM = self.getAtomsByEKinds([eKind.NoMetal, eKind.NoMetal])
 		if len(elementsM) == len(self.atoms): return binaryCompound.Volatile_Salts
+		
 		elementsNoM_M = self.getAtomsByEKinds([eKind.NoMetal, eKind.Metal])
 		if len(elementsNoM_M) == len(self.atoms): return binaryCompound.Neutral_Salts
 		
@@ -245,12 +246,13 @@ class molecule:
 	def printSistematic(self):
 		print(" | sistematica")
 		tempString = ""
-		for i in range(0, len(self.atoms)):
+		for i in range(len(self.atoms)):
 			# check if has other name??
 			# oxigeno -> oxido
 			atom = self.atoms[i]
 			amount_atom = self.amount_atoms[i]
 			if not i == len(self.atoms) - 1:
+				# ??
 				try:
 					tempString += prefix[amount_atom] + rootsElements[atom.element.simb] + " "
 				except:
@@ -258,6 +260,27 @@ class molecule:
 			else:
 				tempString += prefix[amount_atom] + atom.element.name + " "
 		print(tempString)
+		
+	def printSistematicInverted(self):
+		print(" | sistematica")
+		tempString = ""
+		atoms = self.atoms[::-1]
+		amount_atoms = self.amount_atoms[::-1]
+		for i in range(len(atoms)):
+			# check if has other name??
+			# oxigeno -> oxido
+			atom = atoms[i]
+			amount_atom = amount_atoms[i]
+			if not i == len(atoms) - 1:
+				# ??
+				try:
+					tempString += prefix[amount_atom] + rootsElements[atom.element.simb] + " "
+				except:
+					tempString += prefix[amount_atom] + atom.element.root + "uro "
+			else:
+				tempString += prefix[amount_atom] + atom.element.name + " "
+		print(tempString)
+
 
 	def getTradicionalFromAtom(self, atom):
 		return f"{valenciesToTraditional(atom.element, atom.charge)[0]}{atom.element.root}{valenciesToTraditional(atom.element, atom.charge)[1]}"
@@ -382,25 +405,29 @@ class molecule:
 
 				elif compoundBinaryKind == binaryCompound.Neutral_Salts:
 					elementsNoM_M = self.getAtomsByEKinds([eKind.Metal, eKind.NoMetal])
-					atom1 = elementsNoM_M[0]
-					atom2 = elementsNoM_M[1]
-
-					print(" | tradicional")
-					print(f"{atom1.element.root}uro de ")
-					# sistematica
+					atom1 = elementsNoM_M[1]
+					atom2 = elementsNoM_M[0]
+					
 					print(" | stock")
-					print(atom1.element.root + "uro de " + self.getTradicionalFromAtom(atom2))
+					print(f"{atom1.element.root}uro de {atom2.element.name} ({atom2.charge})")
+					self.printSistematicInverted()
+					print(" | tradicional")
+					print(f"{atom1.element.root}uro {self.getTradicionalFromAtom(atom2)}")
 					self.printFormula()
 
 				elif compoundBinaryKind == binaryCompound.Volatile_Salts:
 					elementsNoM = self.getAtomsByEKinds([eKind.NoMetal])
-					atom1 = elementsNoM[0]
-					atom2 = elementsNoM[1]
+					atom1 = elementsNoM[1]
+					atom2 = elementsNoM[0]
 					
 					# tradicional | na
 					# print(f"Anhidrico {noOxygen.element.root}{valenciesToTraditional(noOxygen.element, noOxygen.charge)[1]}")
-
-					self.printSistematic()
+					
+					print(" | tradicional")
+					print(f"{atom1.element.root}uro {self.getTradicionalFromAtom(atom2)}")
+					print(" | stock")
+					print(f"{atom1.element.root}uro de {atom2.element.name} ({atom2.charge})")
+					self.printSistematicInverted()
 					self.printFormula()
 
 				print(" Kind Compound:")
