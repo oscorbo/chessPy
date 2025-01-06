@@ -21,6 +21,13 @@ class element:
             if valency < 0:
                 positiveValencies.append(valency)
         return positiveValencies
+    
+    def getNegativeValencies(self):
+        negativeValencies = []
+        for valency in self.valencies:
+            if valency > 0:
+                negativeValencies.append(valency)
+        return negativeValencies
 
 # ATOM
 

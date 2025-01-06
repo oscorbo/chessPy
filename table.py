@@ -159,6 +159,17 @@ class periodicTable:
 				return element
 		return None
 	
+	def valencyMixer(self, simbs):
+		for index in range(len(simbs)):
+			current_atom = self.getSimb(simbs[index])
+			next_atom = self.getSimb(simbs[index - 1])
+			for negativeValency in current_atom.getNegativeValencies():
+				for positiveValency in next_atom.getPositiveValencies():
+					# xddddd perreo poliglota
+					if negativeValency * - 1 == positiveValency:
+						print(f"{current_atom.simb} {next_atom.simb}")
+					else:
+						print(f"{current_atom.simb}{positiveValency} {next_atom.simb}{negativeValency * -1}")
 
 
 class molecule:
@@ -340,9 +351,9 @@ class molecule:
 					oxygen = self.getElement("O")
 					noOxygen = self.getNotElement("O")
 
-					self.printSistematic()
+					self.printSistematicInverted()
 					self.printStock(oxygen, noOxygen)
-					self.printTradicional(str(compoundBinaryKind).split(".")[1], noOxygen)
+					self.printTradicional(compoundBinaryKind, noOxygen)
 					self.printFormula()
 
 				elif compoundBinaryKind == binaryCompound.Anhydrides:

@@ -20,26 +20,29 @@ fluo = atom(pT.getSimb('F'), 0)
 liti = atom(pT.getSimb('Li'), 0)
 # -3
 nitro = atom(pT.getSimb('N'), 5)
-# -2
-sulfu = atom(pT.getSimb('S'), 3)
+# 2
+sulfu = atom(pT.getSimb('S'), 0)
 # -1
 cloro = atom(pT.getSimb('Cl'), 4)
 # 1
 brom = atom(pT.getSimb('Br'), 0)
 # 1
 cobal = atom(pT.getSimb('Co'), 0)
-# 2
-hier = atom(pT.getSimb('Fe'), 0)
+# 3
+hier = atom(pT.getSimb('Fe'), 1)
 # 2
 tita = atom(pT.getSimb('Ti'), 0)
 # 3
 niqu = atom(pT.getSimb('Ni'), 1)
 # 3 
 boro = atom(pT.getSimb('B'), 0)
+# 
 
-hidroMol = molecule([nitro, boro])
+
+hidroMol = molecule([oxige, sulfu])
 # solamente la sistematica, por ahora
 hidroMol.printThatShitASAP()
+#pT.valencyMixer(["Fe", "O"])
 
 # acido sulfurico
 # H2SO4
