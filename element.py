@@ -45,6 +45,9 @@ class atom:
             print('Error: No found Valency!!')
             self.charge = 0   
 			
+    def setRawCharge(self, charge):
+        self.charge = charge
+
     def getKind(self):
         return self.element.elementKind
 	

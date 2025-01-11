@@ -68,7 +68,7 @@ class periodicTable:
 		eles.append(
 			ele(simb = 'S', name = 'Azufre', 
 			nAtomic = 16, weigAtomic = 32.066, 
-			valency = [2, 4, 6, -2], eKin = eKind.NoMetal, coords = [3, 16], root = "sulf",  electronegatividad = 2.5))
+			valency = [2, 4, 6, -2], eKin = eKind.NoMetal, coords = [3, 16], root = "sulfur",  electronegatividad = 2.5))
 		eles.append(
 			ele(simb = 'Cl', name = 'Cloro', 
 	   		nAtomic = 17, weigAtomic = 35.453, 
@@ -104,7 +104,7 @@ class periodicTable:
 		eles.append(
 			ele(simb = 'Mn', name = 'Manganesio', 
 	   		nAtomic = 25, weigAtomic = 54.938, 
-			valency = [2, 3, 4, 5, 6, 7], eKin = eKind.Metal, coords = [4, 7], root = "mangan",  electronegatividad =1.5))
+			valency = [2, 3, 4, 6, 7], eKin = eKind.Metal, coords = [4, 7], root = "mangan",  electronegatividad =1.5))
 		eles.append(
 			ele(simb = 'Fe', name = 'Hierro', 
 	   		nAtomic = 26, weigAtomic = 55.845, 
@@ -160,16 +160,62 @@ class periodicTable:
 		return None
 	
 	def valencyMixer(self, simbs):
+		names = []
+		molecules = []
 		for index in range(len(simbs)):
 			current_atom = self.getSimb(simbs[index])
 			next_atom = self.getSimb(simbs[index - 1])
-			for negativeValency in current_atom.getNegativeValencies():
-				for positiveValency in next_atom.getPositiveValencies():
-					# xddddd perreo poliglota
-					if negativeValency * - 1 == positiveValency:
-						print(f"{current_atom.simb} {next_atom.simb}")
+			for currentNegativeValency in current_atom.getNegativeValencies():
+				for nextPositiveValency in next_atom.getPositiveValencies():
+					moleculesTemp = []
+					current_atom_  = atom(current_atom, 0)
+					current_atom_.setRawCharge(currentNegativeValency)
+					next_atom_  = atom(next_atom, 0)
+					next_atom_.setRawCharge(nextPositiveValency)
+					print("electrone: " + str(current_atom_.charge))
+
+					if currentNegativeValency == nextPositiveValency *-1:
+						name = f"{current_atom.simb} {next_atom.simb}"
+						print(name)
+
+						# _
+						moleculesTemp.append(current_atom.simb)
+						moleculesTemp.append(next_atom.simb)
+						# _
+
+						molecules.append(moleculesTemp)
+						names.append(name)
+					elif  currentNegativeValency % nextPositiveValency *-1 == 0:
+						name = f"{current_atom.simb} {next_atom.simb}{int(currentNegativeValency / nextPositiveValency *-1)}"
+						print(name)
+
+						# _
+						moleculesTemp.append(current_atom.simb)
+						moleculesTemp.append(next_atom.simb)
+						# _
+
+						molecules.append(moleculesTemp)
+						names.append(name)
 					else:
-						print(f"{current_atom.simb}{positiveValency} {next_atom.simb}{negativeValency * -1}")
+						name = f"{current_atom.simb}{nextPositiveValency * -1} {next_atom.simb}{currentNegativeValency}"
+						print(name)
+
+						# _
+						for i in range(nextPositiveValency * -1):
+							moleculesTemp.append(current_atom.simb)
+						for j in range(currentNegativeValency):
+							moleculesTemp.append(next_atom.simb)
+						# _
+
+						molecules.append(moleculesTemp)
+						names.append(name)
+					# atom_ -> atom into the array
+		for i in range(len(molecules)):
+			print("------------------------")
+			print(names[i])
+			print(molecules[i])
+			# molecule(molecules[i]).printThatShitASAP()
+
 
 
 class molecule:
@@ -255,7 +301,7 @@ class molecule:
 		
 
 	def printSistematic(self):
-		print(" | sistematica")
+		print(" | sistematica (No Inverted)")
 		tempString = ""
 		for i in range(len(self.atoms)):
 			# check if has other name??
@@ -276,7 +322,7 @@ class molecule:
 		print(tempString)
 		
 	def printSistematicInverted(self):
-		print(" | sistematica")
+		print(" | sistematica (Inverted)")
 		tempString = ""
 		atoms = self.atoms[::-1]
 		amount_atoms = self.amount_atoms[::-1]
@@ -303,10 +349,13 @@ class molecule:
 
 	def printStock(self, element1, element2):
 		print(" | stock")
+		print(f"{rootsElements[element1.element.simb]} de {element2.element.name} ({str(element2.charge)})") 
+		'''
 		if len(element2.element.getPositiveValencies()) != 1:
 			print(f"{rootsElements[element1.element.simb]} de {element2.element.name} ({str(element2.charge)})") 
 		else:
 			print(f"{rootsElements[element1.element.simb]} de {element2.element.name} ") 
+		'''
 
 	def printTradicional(self, compoundKind, nonMain):
 		print(" | tradicional")
@@ -360,7 +409,7 @@ class molecule:
 					oxygen = self.getElement("O")
 					noOxygen = self.getNotElement("O")
 
-					self.printSistematic()
+					self.printSistematicInverted()
 					self.printStock(oxygen, noOxygen)
 					self.printTradicional(compoundBinaryKind, noOxygen)
 					self.printFormula()

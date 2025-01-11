@@ -36,13 +36,13 @@ tita = atom(pT.getSimb('Ti'), 0)
 niqu = atom(pT.getSimb('Ni'), 1)
 # 3 
 boro = atom(pT.getSimb('B'), 0)
-# 
+# 4
+mang = atom(pT.getSimb('Mn'), 2)
 
 
-hidroMol = molecule([oxige, sulfu])
-# solamente la sistematica, por ahora
-hidroMol.printThatShitASAP()
-#pT.valencyMixer(["Fe", "O"])
+hidroMol = molecule([oxige, mang, oxige])
+#hidroMol.printThatShitASAP()
+pT.valencyMixer(["Mn", "O"])
 
 # acido sulfurico
 # H2SO4
